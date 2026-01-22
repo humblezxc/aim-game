@@ -3,10 +3,12 @@ const screens = document.querySelectorAll('.screen')
 const timeList = document.querySelector('#time-list')
 const timeEL = document.querySelector('#time')
 const board = document.querySelector('#board')
+const restartBtn = document.querySelector('#restart')
 const colors = ['#F0F8FF', '#7FFFD4', '#DC143C', '#00FFFF', '#9932CC', '#000000', '#00FFFF', '#8FBC8F', '#FFA500', '#FF00FF', '#F0E68C']
 
 let time = 0
 let score = 0
+let intervalId = null
 
 startBtn.addEventListener('click', (event) => {
 
@@ -22,16 +24,20 @@ timeList.addEventListener('click', event => {
 })
 
 board.addEventListener('click', event => {
-    if (event. target.classList.contains('circle')){
+    if (event.target.classList.contains('circle')){
         score++
         event.target.remove()
         createRandomCircle()
     }
 })
 
+restartBtn.addEventListener('click', () => {
+    resetGame()
+})
+
 function startGame(){
     screens[1].classList.add('up')
-    setInterval(decreaseTime, 1000)
+    intervalId = setInterval(decreaseTime, 1000)
     createRandomCircle()
     setTime(time)
 }
@@ -50,11 +56,32 @@ function decreaseTime(){
 }
 function setTime(value) {
     timeEL.innerHTML = `00:${value}`
-    timeEL.innerHTML = `00:${value}`
 }
 function finishGame() {
+    clearInterval(intervalId)
+    intervalId = null
     timeEL.parentNode.classList.add('hide')
     board.innerHTML = `<h1>Score: <span class="primary">${score}</span></h1>`
+    restartBtn.classList.remove('hide')
+}
+
+function resetGame() {
+    if (intervalId) {
+        clearInterval(intervalId)
+        intervalId = null
+    }
+
+    score = 0
+    time = 0
+
+    board.innerHTML = ''
+
+    restartBtn.classList.add('hide')
+
+    timeEL.parentNode.classList.remove('hide')
+
+    screens[2].classList.remove('up')
+    screens[1].classList.remove('up')
 }
 
 function createRandomCircle() {

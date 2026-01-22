@@ -99,3 +99,21 @@ h1 {
     border-radius: 50%;
     cursor: pointer;
 }
+
+.restart-btn {
+    background-color: transparent;
+    border: 2px solid #16D9E3;
+    color: #16D9E3;
+    cursor: pointer;
+    font-family: inherit;
+    padding: 0.75rem 2rem;
+    font-size: 1.5rem;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+}
+
+.restart-btn:hover {
+    background-color: #16D9E3;
+    color: #29323C;
+    transform: scale(1.05);
+}
