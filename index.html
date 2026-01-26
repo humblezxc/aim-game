@@ -34,6 +34,36 @@
 </div>
 
 <div class="screen">
+    <h1>Select difficulty</h1>
+    <ul class="difficulty-list" id="difficulty-list">
+        <li>
+            <button class="difficulty-btn" data-difficulty="easy">
+                <div class="difficulty-title">Easy</div>
+                <div class="difficulty-desc">Large targets (40-60px)</div>
+            </button>
+        </li>
+        <li>
+            <button class="difficulty-btn" data-difficulty="medium">
+                <div class="difficulty-title">Medium</div>
+                <div class="difficulty-desc">Medium targets (25-50px)</div>
+            </button>
+        </li>
+        <li>
+            <button class="difficulty-btn" data-difficulty="hard">
+                <div class="difficulty-title">Hard</div>
+                <div class="difficulty-desc">Small targets (10-35px)</div>
+            </button>
+        </li>
+        <li>
+            <button class="difficulty-btn" data-difficulty="extreme">
+                <div class="difficulty-title">Extreme</div>
+                <div class="difficulty-desc">Tiny targets (8-20px)</div>
+            </button>
+        </li>
+    </ul>
+</div>
+
+<div class="screen">
     <h3>Remains <span id="time">00:00</span></h3>
     <div class="board" id="board"></div>
     <button class="restart-btn hide" id="restart">Play Again</button>

@@ -73,6 +73,49 @@ h1 {
     color: #16D9E3;
 }
 
+.difficulty-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    list-style: none;
+    padding: 0;
+    max-width: 800px;
+}
+
+.difficulty-list li {
+    margin: 10px;
+}
+
+.difficulty-btn {
+    background-color: transparent;
+    border: 2px solid #C0C0C0;
+    color: #fff;
+    cursor: pointer;
+    font-family: inherit;
+    padding: 1rem 1.5rem;
+    font-size: 1.2rem;
+    min-width: 180px;
+    transition: all 0.3s ease;
+}
+
+.difficulty-btn:hover {
+    border: 2px solid #16D9E3;
+    background-color: rgba(22, 217, 227, 0.1);
+    transform: translateY(-2px);
+}
+
+.difficulty-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: #16D9E3;
+}
+
+.difficulty-desc {
+    font-size: 0.9rem;
+    color: #C0C0C0;
+}
+
 .hide {
     opacity: 0;
 }
