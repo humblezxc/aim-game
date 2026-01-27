@@ -63,16 +63,19 @@ function decreaseTime(){
     if (time === 0){
         finishGame()
     } else {
-    let current = --time
-    if (current < 10) {
-        current =`0${current}`
-    }
-    timeEL.innerHTML = `00:${current}`
-    setTime(current)
+        time--
+        setTime(time)
     }
 }
+
+function formatTime(seconds) {
+    const mins = Math.floor(seconds / 60)
+    const secs = seconds % 60
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+}
+
 function setTime(value) {
-    timeEL.innerHTML = `00:${value}`
+    timeEL.innerHTML = formatTime(value)
 }
 function finishGame() {
     clearInterval(intervalId)
