@@ -5,7 +5,7 @@ const difficultyList = document.querySelector('#difficulty-list')
 const timeEL = document.querySelector('#time')
 const board = document.querySelector('#board')
 const restartBtn = document.querySelector('#restart')
-const colors = ['#F0F8FF', '#7FFFD4', '#DC143C', '#00FFFF', '#9932CC', '#FFD700', '#00FFFF', '#8FBC8F', '#FFA500', '#FF00FF', '#F0E68C']
+const colors = ['#F0F8FF', '#7FFFD4', '#DC143C', '#00FFFF', '#9932CC', '#FFD700', '#8FBC8F', '#FFA500', '#FF00FF', '#F0E68C']
 
 const difficultySettings = {
     easy: { minSize: 40, maxSize: 60 },
@@ -107,9 +107,9 @@ function resetGame() {
 
     timeEL.parentNode.classList.remove('hide')
 
-    screens[3].classList.remove('up')
     screens[2].classList.remove('up')
     screens[1].classList.remove('up')
+    screens[0].classList.remove('up')
 }
 
 function createRandomCircle() {
