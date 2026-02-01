@@ -20,6 +20,8 @@ let intervalId = null
 let difficulty = 'medium'
 let totalClicks = 0
 let hits = 0
+let animationId = null
+let activeCircles = []
 
 startBtn.addEventListener('click', (event) => {
 
@@ -49,7 +51,9 @@ board.addEventListener('click', event => {
     if (event.target.classList.contains('circle')){
         score++
         hits++
-        event.target.remove()
+        const circleElement = event.target
+        activeCircles = activeCircles.filter(c => c.element !== circleElement)
+        circleElement.remove()
         createRandomCircle()
     }
 })
@@ -63,6 +67,7 @@ function startGame(){
     intervalId = setInterval(decreaseTime, 1000)
     createRandomCircle()
     setTime(time)
+    animateCircles()
 }
 
 function decreaseTime(){
@@ -86,6 +91,11 @@ function setTime(value) {
 function finishGame() {
     clearInterval(intervalId)
     intervalId = null
+    if (animationId) {
+        cancelAnimationFrame(animationId)
+        animationId = null
+    }
+    activeCircles = []
     timeEL.parentNode.classList.add('hide')
     const difficultyCapitalized = difficulty.charAt(0).toUpperCase() + difficulty.slice(1)
     const accuracy = totalClicks > 0 ? (hits / totalClicks * 100).toFixed(1) : 'N/A'
@@ -104,6 +114,11 @@ function resetGame() {
         clearInterval(intervalId)
         intervalId = null
     }
+    if (animationId) {
+        cancelAnimationFrame(animationId)
+        animationId = null
+    }
+    activeCircles = []
 
     score = 0
     time = 0
@@ -133,15 +148,56 @@ function createRandomCircle() {
     circle.style.width = `${size}px`
     circle.style.height = `${size}px`
     circle.style.top = `${y}px`
-    circle.style.left =`${x}px`
+    circle.style.left = `${x}px`
     circle.style.backgroundColor = getRandomColor()
     board.append(circle)
+
+    if (settings.speed > 0) {
+        const angle = Math.random() * 2 * Math.PI
+        const vx = Math.cos(angle) * settings.speed
+        const vy = Math.sin(angle) * settings.speed
+        activeCircles.push({
+            element: circle,
+            x: x,
+            y: y,
+            vx: vx,
+            vy: vy,
+            size: size
+        })
+    }
+}
+
+function animateCircles() {
+    const boardWidth = 500
+    const boardHeight = 500
+
+    activeCircles.forEach(circle => {
+        circle.x += circle.vx
+        circle.y += circle.vy
+
+        const maxX = boardWidth - circle.size
+        const maxY = boardHeight - circle.size
+
+        if (circle.x <= 0 || circle.x >= maxX) {
+            circle.vx *= -1
+            circle.x = Math.max(0, Math.min(circle.x, maxX))
+        }
+        if (circle.y <= 0 || circle.y >= maxY) {
+            circle.vy *= -1
+            circle.y = Math.max(0, Math.min(circle.y, maxY))
+        }
+
+        circle.element.style.left = `${circle.x}px`
+        circle.element.style.top = `${circle.y}px`
+    })
+
+    animationId = requestAnimationFrame(animateCircles)
 }
 
 function getRandomNumber(min, max) {
-    return Math.round(Math.random() * (max-min) +min)
-
+    return Math.round(Math.random() * (max-min) + min)
 }
+
 function getRandomColor() {
     const index = Math.floor(Math.random() * colors.length)
     return colors[index]
