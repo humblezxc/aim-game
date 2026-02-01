@@ -8,10 +8,10 @@ const restartBtn = document.querySelector('#restart')
 const colors = ['#F0F8FF', '#7FFFD4', '#DC143C', '#00FFFF', '#9932CC', '#FFD700', '#8FBC8F', '#FFA500', '#FF00FF', '#F0E68C']
 
 const difficultySettings = {
-    easy: { minSize: 40, maxSize: 60 },
-    medium: { minSize: 25, maxSize: 50 },
-    hard: { minSize: 10, maxSize: 35 },
-    extreme: { minSize: 8, maxSize: 20 }
+    easy: { minSize: 40, maxSize: 60, speed: 0 },
+    medium: { minSize: 25, maxSize: 50, speed: 1.5 },
+    hard: { minSize: 10, maxSize: 35, speed: 2.5 },
+    extreme: { minSize: 8, maxSize: 20, speed: 4 }
 }
 
 let time = 0
