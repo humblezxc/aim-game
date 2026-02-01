@@ -18,6 +18,8 @@ let time = 0
 let score = 0
 let intervalId = null
 let difficulty = 'medium'
+let totalClicks = 0
+let hits = 0
 
 startBtn.addEventListener('click', (event) => {
 
@@ -41,8 +43,12 @@ difficultyList.addEventListener('click', event => {
 })
 
 board.addEventListener('click', event => {
+    if (intervalId !== null) {
+        totalClicks++
+    }
     if (event.target.classList.contains('circle')){
         score++
+        hits++
         event.target.remove()
         createRandomCircle()
     }
@@ -82,10 +88,12 @@ function finishGame() {
     intervalId = null
     timeEL.parentNode.classList.add('hide')
     const difficultyCapitalized = difficulty.charAt(0).toUpperCase() + difficulty.slice(1)
+    const accuracy = totalClicks > 0 ? (hits / totalClicks * 100).toFixed(1) : 'N/A'
     board.innerHTML = `
         <div>
             <h1>Score: <span class="primary">${score}</span></h1>
             <p style="font-size: 1.2rem; margin-top: -20px;">Difficulty: ${difficultyCapitalized}</p>
+            <p style="font-size: 1.1rem; margin-top: 10px;">Accuracy: <span class="primary">${accuracy}%</span> (${hits}/${totalClicks})</p>
         </div>
     `
     restartBtn.classList.remove('hide')
@@ -100,6 +108,8 @@ function resetGame() {
     score = 0
     time = 0
     difficulty = 'medium'
+    totalClicks = 0
+    hits = 0
 
     board.innerHTML = ''
 
