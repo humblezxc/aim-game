@@ -24,7 +24,7 @@ A browser-based aim training game to improve mouse precision and reaction time. 
 No installation required! Simply clone the repository and open the HTML file:
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/humblezxc/aim-game.git
 cd aim-game
 ```
 
