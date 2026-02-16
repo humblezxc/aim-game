@@ -67,7 +67,9 @@ function startGame(){
     intervalId = setInterval(decreaseTime, 1000)
     createRandomCircle()
     setTime(time)
-    animateCircles()
+    if (difficultySettings[difficulty].speed > 0) {
+        animateCircles()
+    }
 }
 
 function decreaseTime(){
@@ -98,12 +100,12 @@ function finishGame() {
     activeCircles = []
     timeEL.parentNode.classList.add('hide')
     const difficultyCapitalized = difficulty.charAt(0).toUpperCase() + difficulty.slice(1)
-    const accuracy = totalClicks > 0 ? (hits / totalClicks * 100).toFixed(1) : 'N/A'
+    const accuracy = totalClicks > 0 ? (hits / totalClicks * 100).toFixed(1) + '%' : 'N/A'
     board.innerHTML = `
         <div>
             <h1>Score: <span class="primary">${score}</span></h1>
             <p style="font-size: 1.2rem; margin-top: -20px;">Difficulty: ${difficultyCapitalized}</p>
-            <p style="font-size: 1.1rem; margin-top: 10px;">Accuracy: <span class="primary">${accuracy}%</span> (${hits}/${totalClicks})</p>
+            <p style="font-size: 1.1rem; margin-top: 10px;">Accuracy: <span class="primary">${accuracy}</span> (${hits}/${totalClicks})</p>
         </div>
     `
     restartBtn.classList.remove('hide')
@@ -142,8 +144,9 @@ function createRandomCircle() {
     const settings = difficultySettings[difficulty]
     const size = getRandomNumber(settings.minSize, settings.maxSize)
     const {width, height} = board.getBoundingClientRect()
-    const x = getRandomNumber(0, width - size)
-    const y = getRandomNumber(0, height - size)
+    const padding = 30
+    const x = getRandomNumber(padding, width - size - padding)
+    const y = getRandomNumber(padding, height - size - padding)
     circle.classList.add('circle')
     circle.style.width = `${size}px`
     circle.style.height = `${size}px`
@@ -168,6 +171,7 @@ function createRandomCircle() {
 }
 
 function animateCircles() {
+    const padding = 30
     const boardWidth = 500
     const boardHeight = 500
 
@@ -175,16 +179,17 @@ function animateCircles() {
         circle.x += circle.vx
         circle.y += circle.vy
 
-        const maxX = boardWidth - circle.size
-        const maxY = boardHeight - circle.size
+        const minPos = padding
+        const maxX = boardWidth - circle.size - padding
+        const maxY = boardHeight - circle.size - padding
 
-        if (circle.x <= 0 || circle.x >= maxX) {
+        if (circle.x <= minPos || circle.x >= maxX) {
             circle.vx *= -1
-            circle.x = Math.max(0, Math.min(circle.x, maxX))
+            circle.x = Math.max(minPos, Math.min(circle.x, maxX))
         }
-        if (circle.y <= 0 || circle.y >= maxY) {
+        if (circle.y <= minPos || circle.y >= maxY) {
             circle.vy *= -1
-            circle.y = Math.max(0, Math.min(circle.y, maxY))
+            circle.y = Math.max(minPos, Math.min(circle.y, maxY))
         }
 
         circle.element.style.left = `${circle.x}px`
