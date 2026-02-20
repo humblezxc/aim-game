@@ -23,7 +23,16 @@ a:hover {
 }
 
 .start {
+    background: transparent;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-family: inherit;
     font-size: 1.5rem;
+}
+
+.start:hover {
+    color: #16D9E3;
 }
 
 h1 {
@@ -142,6 +151,15 @@ h1 {
     position: absolute;
     border-radius: 50%;
     cursor: pointer;
+}
+
+.combo-display {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #16D9E3;
+    min-height: 2.5rem;
+    margin-top: 10px;
+    letter-spacing: 0.05em;
 }
 
 .restart-btn {
