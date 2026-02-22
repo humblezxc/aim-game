@@ -26,6 +26,8 @@ let hits = 0
 let animationId = null
 let activeCircles = []
 let combo = 0
+let cachedBoardWidth = 0
+let cachedBoardHeight = 0
 
 startBtn.addEventListener('click', () => {
     screens[0].classList.add('up')
@@ -72,6 +74,9 @@ restartBtn.addEventListener('click', () => {
 
 function startGame(){
     screens[2].classList.add('up')
+    const {width, height} = board.getBoundingClientRect()
+    cachedBoardWidth = width
+    cachedBoardHeight = height
     intervalId = setInterval(decreaseTime, 1000)
     createRandomCircle()
     setTime(time)
@@ -216,7 +221,8 @@ function createRandomCircle() {
 }
 
 function animateCircles() {
-    const {width: boardWidth, height: boardHeight} = board.getBoundingClientRect()
+    const boardWidth = cachedBoardWidth
+    const boardHeight = cachedBoardHeight
 
     activeCircles.forEach(circle => {
         circle.x += circle.vx
