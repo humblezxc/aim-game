@@ -52,14 +52,35 @@ board.addEventListener('click', event => {
     if (intervalId !== null) {
         totalClicks++
     }
-    if (event.target.classList.contains('circle')){
+
+    let hitCircle = null
+    if (event.target.classList.contains('circle')) {
+        hitCircle = event.target
+    } else if (activeCircles.length > 0) {
+        const rect = board.getBoundingClientRect()
+        const clickX = event.clientX - rect.left
+        const clickY = event.clientY - rect.top
+        const tolerance = 8
+        for (const circle of activeCircles) {
+            const centerX = circle.x + circle.size / 2
+            const centerY = circle.y + circle.size / 2
+            const radius = circle.size / 2 + tolerance
+            const dx = clickX - centerX
+            const dy = clickY - centerY
+            if (dx * dx + dy * dy <= radius * radius) {
+                hitCircle = circle.element
+                break
+            }
+        }
+    }
+
+    if (hitCircle) {
         combo++
         const points = combo >= 3 ? 2 : 1
         score += points
         hits++
-        const circleElement = event.target
-        activeCircles = activeCircles.filter(c => c.element !== circleElement)
-        circleElement.remove()
+        activeCircles = activeCircles.filter(c => c.element !== hitCircle)
+        hitCircle.remove()
         createRandomCircle()
         updateComboDisplay()
     } else if (intervalId !== null) {
