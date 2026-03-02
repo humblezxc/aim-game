@@ -153,6 +153,20 @@ h1 {
     cursor: pointer;
 }
 
+.countdown {
+    font-size: 5rem;
+    font-weight: bold;
+    color: #16D9E3;
+    z-index: 10;
+    animation: countdownPulse 0.7s ease-in-out;
+}
+
+@keyframes countdownPulse {
+    0% { transform: scale(1.5); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
 .combo-display {
     font-size: 2rem;
     font-weight: bold;

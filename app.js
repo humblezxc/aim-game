@@ -11,10 +11,10 @@ const colors = ['#F0F8FF', '#7FFFD4', '#DC143C', '#00FFFF', '#9932CC', '#FFD700'
 const BOARD_PADDING = 30
 
 const difficultySettings = {
-    easy: { minSize: 40, maxSize: 60, speed: 0 },
-    medium: { minSize: 25, maxSize: 50, speed: 1.5 },
-    hard: { minSize: 10, maxSize: 35, speed: 2.5 },
-    extreme: { minSize: 8, maxSize: 20, speed: 4 }
+    easy: { minSize: 40, maxSize: 60, speed: 0, circles: 1 },
+    medium: { minSize: 25, maxSize: 50, speed: 1.5, circles: 2 },
+    hard: { minSize: 10, maxSize: 35, speed: 2.5, circles: 3 },
+    extreme: { minSize: 8, maxSize: 20, speed: 4, circles: 3 }
 }
 
 let time = 0
@@ -98,12 +98,34 @@ function startGame(){
     const {width, height} = board.getBoundingClientRect()
     cachedBoardWidth = width
     cachedBoardHeight = height
-    intervalId = setInterval(decreaseTime, 1000)
-    createRandomCircle()
     setTime(time)
-    if (difficultySettings[difficulty].speed > 0) {
-        animateCircles()
-    }
+    showCountdown(() => {
+        intervalId = setInterval(decreaseTime, 1000)
+        createRandomCircle()
+        if (difficultySettings[difficulty].speed > 0) {
+            animateCircles()
+        }
+    })
+}
+
+function showCountdown(callback) {
+    const countdownEl = document.createElement('div')
+    countdownEl.classList.add('countdown')
+    board.append(countdownEl)
+    let count = 3
+    countdownEl.textContent = count
+    const tick = setInterval(() => {
+        count--
+        if (count > 0) {
+            countdownEl.textContent = count
+        } else if (count === 0) {
+            countdownEl.textContent = 'GO!'
+        } else {
+            clearInterval(tick)
+            countdownEl.remove()
+            callback()
+        }
+    }, 700)
 }
 
 function decreaseTime(){
