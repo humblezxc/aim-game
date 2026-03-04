@@ -9,12 +9,26 @@ const comboEl = document.querySelector('#combo')
 const colors = ['#F0F8FF', '#7FFFD4', '#DC143C', '#00FFFF', '#9932CC', '#FFD700', '#8FBC8F', '#FFA500', '#FF00FF', '#F0E68C']
 
 const BOARD_PADDING = 30
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)()
+
+function playSound(freq, duration, type = 'sine') {
+    const osc = audioCtx.createOscillator()
+    const gain = audioCtx.createGain()
+    osc.type = type
+    osc.frequency.value = freq
+    gain.gain.setValueAtTime(0.15, audioCtx.currentTime)
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration)
+    osc.connect(gain)
+    gain.connect(audioCtx.destination)
+    osc.start()
+    osc.stop(audioCtx.currentTime + duration)
+}
 
 const difficultySettings = {
-    easy: { minSize: 40, maxSize: 60, speed: 0, circles: 1 },
-    medium: { minSize: 25, maxSize: 50, speed: 1.5, circles: 2 },
-    hard: { minSize: 10, maxSize: 35, speed: 2.5, circles: 3 },
-    extreme: { minSize: 8, maxSize: 20, speed: 4, circles: 3 }
+    easy: { minSize: 40, maxSize: 60, speed: 0, circles: 1, lifetime: 0, spawnRate: 0 },
+    medium: { minSize: 25, maxSize: 50, speed: 1.5, circles: 2, lifetime: 4000, spawnRate: 2500 },
+    hard: { minSize: 10, maxSize: 35, speed: 2.5, circles: 3, lifetime: 3000, spawnRate: 2000 },
+    extreme: { minSize: 8, maxSize: 20, speed: 4, circles: 3, lifetime: 2000, spawnRate: 1500 }
 }
 
 let time = 0
@@ -28,6 +42,7 @@ let activeCircles = []
 let combo = 0
 let cachedBoardWidth = 0
 let cachedBoardHeight = 0
+let spawnIntervalId = null
 
 startBtn.addEventListener('click', () => {
     screens[0].classList.add('up')
@@ -79,12 +94,19 @@ board.addEventListener('click', event => {
         const points = combo >= 3 ? 2 : 1
         score += points
         hits++
+        if (combo > 0 && combo % 5 === 0) {
+            playSound(880, 0.3, 'triangle')
+        } else {
+            playSound(600 + combo * 20, 0.15)
+        }
         activeCircles = activeCircles.filter(c => c.element !== hitCircle)
+        showScorePopup(event, points)
         hitCircle.remove()
         createRandomCircle()
         updateComboDisplay()
     } else if (intervalId !== null) {
         combo = 0
+        playSound(200, 0.2, 'square')
         updateComboDisplay()
     }
 })
@@ -101,9 +123,17 @@ function startGame(){
     setTime(time)
     showCountdown(() => {
         intervalId = setInterval(decreaseTime, 1000)
-        createRandomCircle()
-        if (difficultySettings[difficulty].speed > 0) {
+        const settings = difficultySettings[difficulty]
+        for (let i = 0; i < settings.circles; i++) {
+            createRandomCircle()
+        }
+        if (settings.speed > 0) {
             animateCircles()
+        }
+        if (settings.spawnRate > 0) {
+            spawnIntervalId = setInterval(() => {
+                createRandomCircle()
+            }, settings.spawnRate)
         }
     })
 }
@@ -171,9 +201,24 @@ function updateComboDisplay() {
     }
 }
 
+function showScorePopup(event, points) {
+    const popup = document.createElement('div')
+    popup.textContent = `+${points}`
+    popup.classList.add('score-popup')
+    const rect = board.getBoundingClientRect()
+    popup.style.left = `${event.clientX - rect.left}px`
+    popup.style.top = `${event.clientY - rect.top}px`
+    board.append(popup)
+    popup.addEventListener('animationend', () => popup.remove())
+}
+
 function finishGame() {
     clearInterval(intervalId)
     intervalId = null
+    if (spawnIntervalId) {
+        clearInterval(spawnIntervalId)
+        spawnIntervalId = null
+    }
     if (animationId) {
         cancelAnimationFrame(animationId)
         animationId = null
@@ -207,6 +252,10 @@ function resetGame() {
     if (intervalId) {
         clearInterval(intervalId)
         intervalId = null
+    }
+    if (spawnIntervalId) {
+        clearInterval(spawnIntervalId)
+        spawnIntervalId = null
     }
     if (animationId) {
         cancelAnimationFrame(animationId)
@@ -260,6 +309,15 @@ function createRandomCircle() {
             vy: vy,
             size: size
         })
+    }
+
+    if (settings.lifetime > 0) {
+        setTimeout(() => {
+            if (circle.parentNode) {
+                activeCircles = activeCircles.filter(c => c.element !== circle)
+                circle.remove()
+            }
+        }, settings.lifetime)
     }
 }
 
