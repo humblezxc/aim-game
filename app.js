@@ -6,6 +6,7 @@ const timeEL = document.querySelector('#time')
 const board = document.querySelector('#board')
 const restartBtn = document.querySelector('#restart')
 const comboEl = document.querySelector('#combo')
+const scoreDisplay = document.querySelector('#score-display')
 const colors = ['#F0F8FF', '#7FFFD4', '#DC143C', '#00FFFF', '#9932CC', '#FFD700', '#8FBC8F', '#FFA500', '#FF00FF', '#F0E68C']
 
 const BOARD_PADDING = 30
@@ -93,6 +94,7 @@ board.addEventListener('click', event => {
         combo++
         const points = combo >= 3 ? 2 : 1
         score += points
+        scoreDisplay.textContent = score
         hits++
         if (combo > 0 && combo % 5 === 0) {
             playSound(880, 0.3, 'triangle')
@@ -270,6 +272,7 @@ function resetGame() {
     hits = 0
     combo = 0
     comboEl.classList.add('hide')
+    scoreDisplay.textContent = '0'
 
     board.innerHTML = ''
 
